@@ -1,5 +1,9 @@
 # 香港故事地图 · 一座城的传记
 
+**在线阅读：[打开香港故事地图](https://hongjinrui.github.io/ToKnow_Hongkong/)**
+
+直接分享这个链接，别人就能在浏览器中阅读，无需下载或登录。
+
 **从地图进入香港，从故事记住地方。** 36篇经过选择的近现代故事，跨越1841—2026年的叙事范围，覆盖港岛、九龙、新界与离岛。正文约2.3万字（含标点），180个段落保留出处，114条故事内来源记录对应111个不同链接。
 
 [下载单文件地图](https://github.com/hongjinrui/ToKnow_Hongkong/raw/refs/heads/main/hong-kong-story-atlas.html) · [下载完整项目ZIP](https://github.com/hongjinrui/ToKnow_Hongkong/archive/refs/heads/main.zip) · [纯文字故事目录](#故事目录) · [验证记录](docs/VERIFICATION.md)
@@ -10,10 +14,11 @@
 
 ## 打开就能读
 
-- **最方便**：下载上面的单文件HTML，保存后用Chrome、Edge、Firefox或Safari打开。故事、地理轮廓、筛选、时间线、记忆卡均已装进一个文件。
+- **在线阅读**：打开 [香港故事地图](https://hongjinrui.github.io/ToKnow_Hongkong/)，可直接分享网址或某一篇故事的链接。
+- **离线保存**：下载上面的单文件HTML，保存后用Chrome、Edge、Firefox或Safari打开。故事、地理轮廓、筛选、时间线、记忆卡均已装进一个文件。
 - **完整版本**：下载ZIP并解压，双击根目录 `index.html`。保留 `data/`、`app.js`、`core.js` 与 `styles.css` 的相对位置。不需要API密钥、账号或构建步骤。
 - `reader.html` 是不依赖JavaScript的完整阅读版；`memory-cards.html` 可打印或保存为PDF。
-- GitHub的文件预览显示源代码，不能直接把仓库里的HTML当成已部署网站。当前交付包含完整离线成品与源代码。
+- 在线版由GitHub Pages托管；离线版与源代码仍可下载保存。
 
 首屏就是地点地图。点击聚合编号可逐篇选择；左侧列表始终保留全部可读入口。按年代、地域、主题和关键词组合筛选，或从6条阅读线索进入。读完手动标记，收藏再访，利用记忆卡复述地点的转折。记录只保存在本机浏览器；无法保存时仍能继续阅读。
 
@@ -78,6 +83,14 @@
 | 沙田威尔斯亲王医院 | [十一人同时请了病假](stories/prince-of-wales-sars.md) | 2003–2003 |
 | 金钟夏悫道 | [夏悫道上举起的伞](stories/admiralty-umbrellas.md) | 2014–2014 |
 | 金钟立法会综合大楼 | [从一份修例草案，到另一套政治日常](stories/legco-2019-2024.md) | 2019–2024 |
+
+## 网站发布
+
+访问地址：**https://hongjinrui.github.io/ToKnow_Hongkong/**
+
+`main` 是内容和程序的维护分支。每次更新会通过 `Publish GitHub Pages` 工作流检查资料，再同步到 `gh-pages` 发布分支并请求重新部署。工作流会等待发布完成，检查首页、脚本、故事数据及阅读页面的在线内容与当前提交一致。可在 [Actions](https://github.com/hongjinrui/ToKnow_Hongkong/actions/workflows/pages.yml) 查看发布结果或手动重跑。
+
+分享具体故事时，在地图里打开故事，使用“分享”按钮复制带 `#story=…` 的链接。
 
 ## 资料和维护
 

@@ -1,0 +1,42 @@
+name: Publish GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages-publish
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    permissions:
+      contents: write
+      pages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate content and runtime assets
+        run: node tests/validate.mjs
+      - name: Synchronize the Pages publishing branch
+        run: git push origin HEAD:refs/heads/gh-pages
+      - name: Request a Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds" --jq '.status'
+      - name: Verify the published website and asset versions
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/verify-pages.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: github-pages-verification
+          path: artifacts/pages-verification.json
+          if-no-files-found: warn
