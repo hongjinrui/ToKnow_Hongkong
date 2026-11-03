@@ -4,6 +4,10 @@
 
 [下载单文件地图](https://github.com/hongjinrui/ToKnow_Hongkong/raw/refs/heads/main/hong-kong-story-atlas.html) · [下载完整项目ZIP](https://github.com/hongjinrui/ToKnow_Hongkong/archive/refs/heads/main.zip) · [纯文字故事目录](#故事目录) · [验证记录](docs/VERIFICATION.md)
 
+![桌面地图的实际浏览器截图](docs/previews/atlas-desktop.png)
+
+<details><summary>查看手机阅读界面</summary><img src="docs/previews/reader-phone.png" width="390" alt="手机上的九龙寨城故事阅读界面"></details>
+
 ## 打开就能读
 
 - **最方便**：下载上面的单文件HTML，保存后用Chrome、Edge、Firefox或Safari打开。故事、地理轮廓、筛选、时间线、记忆卡均已装进一个文件。
