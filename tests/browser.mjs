@@ -58,6 +58,7 @@ try{
   assert.ok((await page.locator('#reader-title').innerText()).includes('蒸笼'));
   assert.ok((await page.locator('#reader').innerText()).includes('2026'),'Deep-linked article must include new location history');
   await page.locator('#reader-close').click();
+  await page.waitForFunction(()=>document.getElementById('toast').hidden);
   await page.screenshot({path:'artifacts/atlas-desktop.png',fullPage:true});
   const phone=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true});
   phone.on('pageerror',e=>errors.push(e.message));
@@ -70,7 +71,8 @@ try{
   for(let i=0;i<12;i++){await phone.keyboard.press('Tab');assert.ok(await phone.evaluate(()=>document.getElementById('reader').contains(document.activeElement)),'Phone reader must retain keyboard focus');}
   assert.ok((await phone.locator('#reader-title').innerText()).includes('南门'));
   assert.ok(await phone.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'Phone page must fit viewport');
-  await phone.screenshot({path:'artifacts/reader-phone.png',fullPage:true});
+  await phone.locator('#reader').evaluate(el=>{el.scrollTop=0;document.activeElement.blur();});
+  await phone.screenshot({path:'artifacts/reader-phone.png',fullPage:false});
   await phone.locator('#reader-close').click();
   const marker=await phone.locator('#atlas-svg [data-map-ids]').first().boundingBox();
   assert.ok(marker&&marker.width>=28&&marker.height>=28,'Phone map markers must retain readable pixel size');

@@ -12,7 +12,7 @@ html=html.replace(/<script\b[^>]*src="([^"]+)"[^>]*>\s*<\/script>/g,(tag,src)=>{
   return '';
 });
 html=html.replace('</body>',scripts.join('\n')+'\n</body>');
-html=html.replace(/href="(docs\/[^"]+|reader\.html|memory-cards\.html)"/g,(_,p)=>'href="https://github.com/hongjinrui/ToKnow_Hongkong/blob/main/'+p+'"');
+html=html.replace(/href="(docs\/[^"]+|reader\.html|memory-cards\.html)"/g,(_,p)=>'href="'+(p==='reader.html'?'https://github.com/hongjinrui/ToKnow_Hongkong/blob/main/README.md#故事目录':p==='memory-cards.html'?'https://github.com/hongjinrui/ToKnow_Hongkong/raw/refs/heads/main/memory-cards.html':'https://github.com/hongjinrui/ToKnow_Hongkong/blob/main/'+p)+'"');
 fs.mkdirSync('artifacts',{recursive:true});
 fs.writeFileSync('artifacts/hong-kong-story-atlas.html',html);
 console.log('Portable atlas: artifacts/hong-kong-story-atlas.html ('+Buffer.byteLength(html)+' bytes)');
