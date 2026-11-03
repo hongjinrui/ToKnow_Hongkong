@@ -2,6 +2,10 @@ name: Verify story atlas
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
   pull_request:
   workflow_dispatch:
 permissions:

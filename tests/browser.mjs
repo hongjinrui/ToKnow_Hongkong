@@ -4,6 +4,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import assert from 'node:assert/strict';
 const stories=JSON.parse(fs.readFileSync('data/stories.json','utf8'));
+assert.equal(fs.readFileSync('artifacts/hong-kong-story-atlas.html','utf8'),fs.readFileSync('hong-kong-story-atlas.html','utf8'),'Committed portable HTML must match the source build');
 fs.mkdirSync('artifacts',{recursive:true});
 const browser=await chromium.launch({headless:true});
 const errors=[];
@@ -90,4 +91,5 @@ try{
   assert.deepEqual(errors,[],'No uncaught browser errors');
   fs.writeFileSync('artifacts/browser-results.json',JSON.stringify({status:'passed',stories:36,checks:['offline geography','region/theme/search filters','empty results','reader','paragraph citations','saved/read persistence','timeline','memory','reading routes','deep links','phone layout','portable HTML','storage denial'],uncaughtErrors:errors},null,2));
   console.log('Browser verification passed: desktop, phone, offline, portable HTML and storage denial.');
+  for(const name of ['atlas-desktop','reader-phone'])console.log('ATLAS_PREVIEW_'+name+':'+fs.readFileSync('artifacts/'+name+'.png').toString('base64'));
 }finally{await browser.close();}

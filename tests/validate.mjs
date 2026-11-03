@@ -66,3 +66,10 @@ assert.equal(C.safeUrl('https://www.amo.gov.hk/'),'https://www.amo.gov.hk/');
 assert.equal(C.escapeHtml('<>&"'), '&lt;&gt;&amp;&quot;');
 for(const s of stories)assert.ok(s.chronology.every(y=>y.year>=s.start&&y.year<=s.end),s.id+' chronology outside narrative range');
 console.log('Filter intersections, reading route order, traditional place queries, citations and URL safety passed.');
+
+assert.deepEqual(stories,JSON.parse(fs.readFileSync('data/stories.json','utf8')),'The offline JS and editable JSON must contain identical stories');
+for(const s of stories){
+  const md=fs.readFileSync('stories/'+s.id+'.md','utf8');
+  for(const p of s.paragraphs)assert.ok(md.includes(p.text),s.id+' Markdown differs from canonical narrative');
+}
+console.log('Editable JSON, offline JS and GitHub-readable narratives match.');
