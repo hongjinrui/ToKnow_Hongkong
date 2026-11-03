@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173f3d">
+  <meta name="description" content="从1841年以来的香港出发，沿地点、年代、人物与食物，阅读有文献出处的城市故事。">
+  <title>香港故事地图 · 一座城的传记</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="core.js"></script>
+  <script defer src="data/stories.js"></script>
+  <script defer src="data/coast.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#story-list">跳到故事列表</a>
+  <header class="masthead">
+    <a class="brand" href="index.html" aria-label="香港故事地图首页"><span class="seal" aria-hidden="true">港</span><span><strong>香港故事地图</strong><small>A BIOGRAPHY OF A CITY</small></span></a>
+    <p class="masthead-note">一座城的传记 <span>1841 — 2026</span></p>
+    <nav class="top-actions" aria-label="辅助功能"><button id="random-story" class="quiet">偶遇一篇 <span aria-hidden="true">↗</span></button><button id="about-open" class="quiet">关于 / 史料</button></nav>
+  </header>
+  <main id="atlas">
+    <aside class="explorer" aria-label="探索与筛选">
+      <div class="intro"><p class="eyebrow">沿着地方，记住香港</p><h1>把一座城，<br>读成一个个故事。</h1><p>从码头到茶楼，从迁徙到转折。点开地图上的一处，让时间把它慢慢展开。</p></div>
+      <div class="search-wrap"><span aria-hidden="true">⌕</span><label class="sr-only" for="search">搜索地点、人物、食物或故事正文</label><input id="search" type="search" placeholder="找一个地方、一个人、一种味道…" autocomplete="off"><kbd aria-hidden="true">/</kbd></div>
+      <form id="filters" class="filter-form">
+        <div class="filter-pair"><label>地域<select id="region"><option value="">全香港</option><option>香港岛</option><option>九龙</option><option>新界</option><option>离岛</option></select></label><label>主题<select id="theme"><option value="">全部主题</option></select></label></div>
+        <div class="time-heading"><span>故事叙述的年代</span><button type="button" id="reset-filters" class="text-button">重置</button></div>
+        <div class="year-range"><label><span class="sr-only">起始年份</span><input id="year-from" type="number" min="1841" max="2026" value="1841" inputmode="numeric"></label><span aria-hidden="true">—</span><label><span class="sr-only">结束年份</span><input id="year-to" type="number" min="1841" max="2026" value="2026" inputmode="numeric"></label></div>
+        <p class="range-note">筛选与这段年代有交集的故事，不代表每年都有事件。</p>
+        <div class="era-chips" aria-label="快速选择年代"><button type="button" data-era="1841,1911">开埠</button><button type="button" data-era="1912,1945">动荡</button><button type="button" data-era="1946,1978">重建</button><button type="button" data-era="1979,1997">转型</button><button type="button" data-era="1998,2026">当代</button></div>
+        <div class="collection-filters"><label><input type="checkbox" id="saved-only"> 只看收藏</label><label><input type="checkbox" id="unread-only"> 还没读过</label></div>
+      </form>
+      <section class="reading-progress" aria-label="阅读进度"><div><span>你的城市记忆</span><strong id="progress-label">0 / 0</strong></div><progress id="progress" max="1" value="0"></progress><p>读过后亲手标记；记忆卡可以再考考自己。</p></section>
+      <div class="list-heading"><h2>地方与故事 <span id="result-count">0</span></h2><span id="filter-hint">按故事起点排列</span></div>
+      <div id="story-list" class="story-list" tabindex="-1"></div>
+      <footer class="explorer-footer">史料是骨架，叙事是进入它的门。<br><button id="sources-open" class="text-button">怎么看这张地图 ↗</button></footer>
+    </aside>
+    <section class="canvas" aria-label="故事地图与时间线">
+      <div class="canvas-toolbar"><div class="view-switch" role="group" aria-label="探索方式"><button id="view-map" data-view="map" class="active" aria-pressed="true">地图</button><button id="view-timeline" data-view="timeline" aria-pressed="false">时间线</button><button id="view-memory" data-view="memory" aria-pressed="false">记忆卡</button></div><button id="routes-toggle" class="route-toggle" aria-expanded="false" aria-controls="routes-panel"><span aria-hidden="true">⌁</span> 主题阅读</button></div>
+      <section id="routes-panel" class="routes-panel" hidden aria-label="主题阅读路线"><div><p class="eyebrow">不必一次读完整座城</p><h2>先沿着一条线索走。</h2><p>以下是阅读顺序建议，并非步行导航。</p></div><div id="routes-grid" class="routes-grid"></div></section>
+      <div id="map-view" class="view-panel">
+        <div class="map-caption"><span class="map-cross" aria-hidden="true">✥</span><span><strong id="map-title">香港 · 地方与记忆</strong><small id="map-subtitle">点选编号，进入故事</small></span></div>
+        <div id="diagram-map" class="diagram-map"><svg id="atlas-svg" viewBox="0 0 1000 760" role="group" aria-label="香港故事方位示意地图，可用加减按钮缩放，可拖动平移"></svg></div>
+        <div id="street-map" class="street-map" hidden aria-label="OpenStreetMap街道地图"></div>
+        <div class="map-tools" aria-label="地图控制"><button id="zoom-in" aria-label="放大地图">+</button><button id="zoom-out" aria-label="缩小地图">−</button><button id="zoom-reset" aria-label="显示所有地点">⌂</button></div>
+        <button id="basemap-toggle" class="basemap-toggle">切换街道底图 ↗</button>
+        <div class="map-key"><span><i class="key-dot"></i> 有故事的地方</span><span><i class="key-dot read"></i> 已读</span><span class="north" aria-label="北方">↑ N</span></div>
+        <p id="map-attribution" class="map-attribution">2017年资料概化底图 · 非历史岸线 · <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">© OpenStreetMap contributors</a></p>
+        <div id="cluster-panel" class="cluster-panel" hidden></div>
+        <div class="map-bottom-note"><span>HONG KONG</span><p>海岸会移动，街道会改名。<br>留下的线索，还能把过去接起来。</p></div>
+      </div>
+      <section id="timeline-view" class="view-panel timeline-view" hidden aria-label="香港故事时间线"><div class="view-title"><p class="eyebrow">同一座城，不同的时间</p><h2>把故事放回年代里。</h2><p>按叙事起点排列，文章内另附关键事件年表。</p></div><div id="timeline-content"></div></section>
+      <section id="memory-view" class="view-panel memory-view" hidden aria-label="城市记忆自测"><div class="view-title"><p class="eyebrow">记住一个地方的理由</p><h2>合上故事，还记得什么？</h2><p>先想起地点的转折，再翻开一句话记忆。题目跟随当前筛选。</p></div><div id="memory-content" class="memory-grid"></div></section>
+      <div id="canvas-status" class="sr-only" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+  <aside id="reader" class="reader" role="dialog" aria-modal="false" aria-labelledby="reader-title" hidden>
+    <div class="reader-toolbar"><button id="reader-close" class="quiet" aria-label="关闭故事，返回地图"><span aria-hidden="true">←</span> 返回地图</button><div><button id="save-story" class="quiet">收藏</button><button id="share-story" class="quiet">分享 ↗</button></div></div>
+    <article id="reader-content"></article>
+    <div class="reader-bottom"><button id="previous-story">← 上一篇</button><button id="mark-read">标为读过</button><button id="next-story">下一篇 →</button></div>
+  </aside>
+  <dialog id="about-dialog" class="about-dialog" aria-labelledby="about-title"><div class="about-top"><p class="eyebrow">关于这份城市传记</p><button id="about-close" class="quiet" aria-label="关闭关于窗口">关闭 ×</button></div><h2 id="about-title">故事带你进去，<br>来源让你继续追问。</h2><div id="about-content"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><div class="noscript">这张交互地图需要启用JavaScript。你仍可打开<a href="reader.html">纯文字阅读版</a>，或在GitHub仓库阅读资料：<a href="https://github.com/hongjinrui/ToKnow_Hongkong">打开仓库</a>。</div></noscript>
+</body>
+</html>

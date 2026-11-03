@@ -1,0 +1,35 @@
+name: Verify story atlas
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate stories, citations, coordinates and JavaScript
+        run: node tests/validate.mjs
+      - name: Build portable single-file atlas
+        run: node scripts/package.mjs
+      - name: Install pinned browser test dependency
+        run: npm install --ignore-scripts --no-package-lock --no-audit --no-fund
+      - name: Install test browser
+        run: npx playwright install --with-deps chromium
+      - name: Install Chinese display fonts for screenshots
+        run: sudo apt-get install -y fonts-noto-cjk
+      - name: Verify desktop, phone, deep links and offline use
+        run: node tests/browser.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hong-kong-story-atlas
+          path: artifacts/
+          if-no-files-found: error
