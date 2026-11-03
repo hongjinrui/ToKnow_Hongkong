@@ -248,6 +248,7 @@ window.HK_COAST = {"type":"FeatureCollection","features":[{"type":"Feature","pro
       $('view-'+x).classList.toggle('active',x===view);
       $('view-'+x).setAttribute('aria-pressed',String(x===view));
     });
+    if(view==='map') renderDiagram();
     if (view==='map' && leafletMap && state.basemap==='street') setTimeout(()=>leafletMap.invalidateSize(),0);
   }
   function renderTimeline() {
@@ -396,16 +397,26 @@ window.HK_COAST = {"type":"FeatureCollection","features":[{"type":"Feature","pro
   function clusters() {
     const rect=$('atlas-svg').getBoundingClientRect();
     const pixelsPerUnit=Math.min(rect.width/vb.w,rect.height/vb.h) || 1;
-    const buckets=new Map(), threshold=40/pixelsPerUnit;
-    state.filtered.forEach(s=>{
-      const p=project([s.coordinates[1],s.coordinates[0]]);
-      const key=Math.floor(p[0]/threshold)+':'+Math.floor(p[1]/threshold);
-      if(!buckets.has(key))buckets.set(key,[]);buckets.get(key).push({s,p});
-    });
-    return [...buckets.values()];
+    const threshold=46/pixelsPerUnit;
+    const groups=state.filtered.map(s=>[{s,p:project([s.coordinates[1],s.coordinates[0]])}]);
+    const center=group=>[group.reduce((n,v)=>n+v.p[0],0)/group.length,group.reduce((n,v)=>n+v.p[1],0)/group.length];
+    let changed=true;
+    while(changed) {
+      changed=false;
+      merge: for(let i=0;i<groups.length;i++) {
+        const A=center(groups[i]);
+        for(let j=i+1;j<groups.length;j++) {
+          const B=center(groups[j]);
+          if((A[0]-B[0])**2+(A[1]-B[1])**2 < threshold**2) {
+            groups[i].push(...groups[j]);groups.splice(j,1);changed=true;break merge;
+          }
+        }
+      }
+    }
+    return groups;
   }
   function renderDiagram() {
-    const svg=$('atlas-svg');if(!svg)return;
+    const svg=$('atlas-svg');if(!svg||$('map-view').hidden||$('diagram-map').hidden)return;
     svg.setAttribute('viewBox',[vb.x,vb.y,vb.w,vb.h].join(' '));
     const rect=svg.getBoundingClientRect();
     const factor=1/(Math.min(rect.width/vb.w,rect.height/vb.h)||1);
@@ -481,7 +492,7 @@ window.HK_COAST = {"type":"FeatureCollection","features":[{"type":"Feature","pro
   }
   function showDiagram() {
     state.basemap='diagram';$('diagram-map').hidden=false;$('street-map').hidden=true;$('map-view').classList.remove('street-active');
-    $('basemap-toggle').textContent='切换街道底图 ↗';clearTimeout(streetLoadTimer);
+    $('basemap-toggle').textContent='切换街道底图 ↗';clearTimeout(streetLoadTimer);renderDiagram();
   }
   function renderLeafletMarkers() {
     if(!leafletMap||!leafletLayer)return;

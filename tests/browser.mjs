@@ -17,7 +17,12 @@ try{
   await page.goto(home);await count(36);
   assert.equal(await page.locator('#atlas-svg').count(),1,'Offline geographic map must exist');
   assert.ok(await page.locator('#atlas-svg [data-map-ids]').count(),'Offline map needs real story markers');
+  assert.ok(await page.locator('#atlas-svg [data-map-ids]').evaluateAll(els=>els.every(el=>{
+    const r=el.getBoundingClientRect(),target=document.elementFromPoint(r.x+r.width/2,r.y+r.height/2);
+    return target?.closest('[data-map-ids]')===el;
+  })),'Every geographic marker center must be directly clickable');
   const mapGroups=await page.locator('#atlas-svg [data-map-ids]').evaluateAll(els=>els.map(el=>el.getAttribute('data-map-ids')));
+  assert.deepEqual(mapGroups.flatMap(ids=>ids.split('|')).sort(),stories.map(s=>s.id).sort(),'Each story must appear in exactly one geographic group');
   const clustered=mapGroups.find(ids=>ids.includes('|'));
   assert.ok(clustered,'Dense places must form selectable groups');
   await page.locator('#atlas-svg [data-map-ids="'+clustered+'"]').click();
@@ -62,6 +67,12 @@ try{
   assert.ok(await page.locator('#diagram-map').isVisible(),'Blocked network map must retain offline geography');
   await page.locator('#view-timeline').click();
   assert.equal(await page.locator('#timeline-content .timeline-item').count(),36);
+  await page.locator('#region').selectOption('离岛');await count(stories.filter(s=>s.region==='离岛').length);
+  await page.locator('#view-map').click();
+  const returnedMarker=await page.locator('#atlas-svg [data-map-ids]').first().boundingBox();
+  assert.ok(returnedMarker&&returnedMarker.width>=28,'Filtering another view must preserve map marker sizing on return');
+  await page.locator('#reset-filters').click();await count(36);
+  await page.locator('#view-timeline').click();
   await page.screenshot({path:'artifacts/timeline-desktop.png',fullPage:true});
   await page.locator('#view-memory').click();
   assert.equal(await page.locator('#memory-content .memory-card').count(),36);
